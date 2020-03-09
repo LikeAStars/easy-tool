@@ -1,0 +1,32 @@
+{
+  "name": "my-easy-tool",
+  "version": "1.0.2",
+  "description": "personal javascript tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.config.js --progress --colors"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moyunsuibuyao/easy-tool.git"
+  },
+  "keywords": [
+    "easy",
+    "tool",
+    "easy-tool",
+    "sanmi",
+    "三米",
+    "javasrcipt"
+  ],
+  "author": "三米",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moyunsuibuyao/easy-tool/issues"
+  },
+  "homepage": "https://github.com/moyunsuibuyao/easy-tool#readme",
+  "dependencies": {
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11"
+  }
+}
