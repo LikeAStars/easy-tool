@@ -100,38 +100,44 @@ return /******/ (function(modules) { // webpackBootstrap
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var _date__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var _validator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /**
- * Created by wujiaming on 2020/3/9
+ * Created by wujiaming on 2020/3/10
  **/
 
-/*
- * 时间格式化
- * @params: date: 传入的时间     format: 格式化
- */
-const fmt = (date, format) => {
-  const dates = new Date(date);
-  let o = {
-    "M+": dates.getMonth() + 1, //月份
-    "d+": dates.getDate(), //日
-    "h+": dates.getHours(), //小时
-    "m+": dates.getMinutes(), //分
-    "s+": dates.getSeconds(), //秒
-    "q+": Math.floor((dates.getMonth() + 3) / 3), //季度
-    "S": dates.getMilliseconds() //毫秒
-  };
-  if (/(y+)/.test(format)) {
-    format = format.replace(RegExp.$1, (dates.getFullYear() + "").substr(4 - RegExp.$1.length));
-  }
-  for (let k in o) {
-    if (new RegExp("(" + k + ")").test(format)) {
-      format = format.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  ..._data__WEBPACK_IMPORTED_MODULE_0__["default"],
+  ..._date__WEBPACK_IMPORTED_MODULE_1__["default"],
+  ..._validator__WEBPACK_IMPORTED_MODULE_2__["default"]
+});
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/**
+ * Created by wujiaming on 2020/3/10
+ **/
+
+// 数组去重
+const uniqBy = (arr, comparator) => {
+  let obj = {};
+  return arr && arr.length ? arr.reduce((item, next) => {
+    if (!obj[next[comparator]]) {
+      item.push(next);
+      obj[next[comparator]] = true;
     }
-  }
-  if (format.includes('NaN')) {
-    console.log('请输入正确的日期格式');
-    return '';
-  }
-  return format;
+    return item;
+  }, []) : [];
 };
 
 /*
@@ -158,21 +164,89 @@ const convert = (arr, key, parentKey, firstParentKey) => {
   return [];
 };
 
+/* harmony default export */ __webpack_exports__["default"] = ({
+  uniqBy,
+  convert
+});
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/**
+ * Created by wujiaming on 2020/3/10
+ **/
+/*
+ * 时间格式化
+ * @params: date: 传入的时间     fmt: 格式化后的样子
+ */
+const format = (date, fmt) => {
+  const dates = new Date(date);
+  let o = {
+    "M+": dates.getMonth() + 1, //月份
+    "d+": dates.getDate(), //日
+    "h+": dates.getHours(), //小时
+    "m+": dates.getMinutes(), //分
+    "s+": dates.getSeconds(), //秒
+    "q+": Math.floor((dates.getMonth() + 3) / 3), //季度
+    "S": dates.getMilliseconds() //毫秒
+  };
+  if (/(y+)/.test(fmt)) {
+    fmt = fmt.replace(RegExp.$1, (dates.getFullYear() + "").substr(4 - RegExp.$1.length));
+  }
+  for (let k in o) {
+    if (new RegExp("(" + k + ")").test(fmt)) {
+      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    }
+  }
+  if (fmt.includes('NaN')) {
+    console.log('请输入正确的日期格式');
+    return '';
+  }
+  return fmt;
+};
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  format
+});
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/**
+ * Created by wujiaming on 2020/3/10
+ **/
+
 // 验证是否为null
 const isNull = (value) => {
-  return value === null
+  return value === null;
+};
+
+// 验证是否是undefined
+const isUndefined = (value) => {
+  return value === undefined;
 };
 
 // 验证输入数字或字符串的值是否为整数
 const isInteger = (value) => {
-  const regx = /^-?\d+$/;
+  const reg = /^-?\d+$/;
+  const num = typeof value === 'string' ? value : value + '';
+  if (num.length > 1 && num[0] === '0') {
+    return false;
+  }
+  return reg.test(value);
 };
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  fmt,
-  convert,
   isNull,
-  isInteger,
+  isInteger
 });
 
 

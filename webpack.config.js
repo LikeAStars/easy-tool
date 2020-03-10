@@ -3,6 +3,7 @@
  **/
 
 const path = require('path');
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 let filename = 'easy-tool.js';
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -17,14 +18,17 @@ if (isPolyfill) {
 let config = {
   mode: 'none',
   entry: {
-    main: path.join(__dirname, './src/main.js'),
+    main: path.join(__dirname, './src/index.js'),
   },
   output: {
     libraryTarget: 'umd',
     libraryExport: 'default',
     filename,
     path: path.join(__dirname, './dist')
-  }
+  },
+  plugins: [
+    new CleanWebpackPlugin(),
+  ],
 };
 
 module.exports = config;
