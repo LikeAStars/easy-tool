@@ -128,7 +128,7 @@ __webpack_require__.r(__webpack_exports__);
  * Created by wujiaming on 2020/3/10
  **/
 
-// 数组去重
+// 数组根据某个key值去重
 const uniqBy = (arr, comparator) => {
   let obj = {};
   return arr && arr.length ? arr.reduce((item, next) => {
@@ -139,6 +139,8 @@ const uniqBy = (arr, comparator) => {
     return item;
   }, []) : [];
 };
+
+// 数组根据
 
 /*
  * 特殊数组转化为树
@@ -244,9 +246,21 @@ const isInteger = (value) => {
   return reg.test(value);
 };
 
+// 四舍五入保留n位小数
+const floatNum = (num, n) => {
+  const data = (`${num}`).split('.');
+  const flag = data[0][0] === '0' && data[0][1] === '0';
+  if (isNaN(num) || flag) {
+    console.log('请输入有效数字');
+  }
+  return (Math.round(num * Math.pow(10,n ? n : 1)) / (Math.pow(10,n ? n : 1))).toFixed(n ? n : 1);
+};
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   isNull,
-  isInteger
+  isInteger,
+  isUndefined,
+  floatNum,
 });
 
 

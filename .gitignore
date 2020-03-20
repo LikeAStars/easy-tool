@@ -3,6 +3,7 @@
 # dependencies
 /node_modules
 /.pnp
+/dist
 stats.json
 .pnp.js
 .stats.json

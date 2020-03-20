@@ -22,7 +22,19 @@ const isInteger = (value) => {
   return reg.test(value);
 };
 
+// 四舍五入保留n位小数
+const floatNum = (num, n) => {
+  const data = (`${num}`).split('.');
+  const flag = data[0][0] === '0' && data[0][1] === '0';
+  if (isNaN(num) || flag) {
+    console.log('请输入有效数字');
+  }
+  return (Math.round(num * Math.pow(10,n ? n : 1)) / (Math.pow(10,n ? n : 1))).toFixed(n ? n : 1);
+};
+
 export default {
   isNull,
-  isInteger
+  isInteger,
+  isUndefined,
+  floatNum,
 }
