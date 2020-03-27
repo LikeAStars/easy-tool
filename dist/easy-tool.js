@@ -166,9 +166,149 @@ const convert = (arr, key, parentKey, firstParentKey) => {
   return [];
 };
 
+/**
+ * 获取url参数
+ * @param {*} name
+ * @param {*} origin
+*/
+const getUrlParams = (name, origin = null) => {
+  let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+  let r = null;
+  if (origin == null) {
+    r = window.location.search.substr(1).match(reg);
+  } else {
+    r = origin.substr(1).match(reg);
+  }
+  if (r != null) {
+    return decodeURIComponent(r[2]);
+  }
+  return null;
+};
+
+/*
+ *修改url中的参数
+ * @param { string } paramName
+ * @param { string } replaceWith
+*/
+const replaceParamVal = (paramName,replaceWith) => {
+  let oUrl = location.href.toString();
+  let re = eval('/('+ paramName+'=)([^&]*)/gi');
+  location.href = oUrl.replace(re,paramName + '=' + replaceWith);
+  return location.href;
+};
+
+/**
+ * 删除url中指定的参数
+ * @param { string } name
+ */
+const funcUrlDel = (name) => {
+  let local = location;
+  let baseUrl = local.origin + local.pathname + "?";
+  let query = local.search.substr(1);
+  if (query.indexOf(name) > -1) {
+    let obj = {};
+    let arr = query.split("&");
+    for (let i = 0; i < arr.length; i++) {
+      arr[i] = arr[i].split("=");
+      obj[arr[i][0]] = arr[i][1];
+    }
+    delete obj[name];
+    return baseUrl + JSON.stringify(obj).replace(/[\"\{\}]/g,"").replace(/\:/g,"=").replace(/\,/g,"&");
+  }
+};
+
+// 获取窗口可视范围的高度
+const getClientHeight = () => {
+  let clientHeight = 0;
+  if (document.body.clientHeight && document.documentElement.clientHeight) {
+    clientHeight = (document.body.clientHeight < document.documentElement.clientHeight) ? document.body.clientHeight : document.documentElement.clientHeight;
+  }
+  else {
+    clientHeight = (document.body.clientHeight > document.documentElement.clientHeight) ? document.body.clientHeight : document.documentElement.clientHeight;
+  }
+  return clientHeight;
+};
+
+// 获取窗口可视范围宽度
+const getPageViewWidth = () => {
+  let d = document;
+  let a = d.compatMode === 'BackCompat' ? d.body : d.documentElement;
+  return a.clientWidth;
+};
+
+// 获取窗口尺寸
+const getViewportOffset = () => {
+  if (window.innerWidth) {
+    return { w: window.innerWidth, h: window.innerHeight };
+  } else {
+    // ie8及其以下
+    if (document.compatMode === "BackCompat") {
+      // 怪异模式
+      return { w: document.body.clientWidth, h: document.body.clientHeight };
+    } else {
+      // 标准模式
+      return { w: document.documentElement.clientWidth, h: document.documentElement.clientHeight };
+    }
+  }
+};
+
+// 获取滚动条距顶部高度
+const getPageScrollTop = () => {
+  let a = document;
+  return a.documentElement.scrollTop || a.body.scrollTop;
+};
+
+// 返回当前滚动条位置
+const getScrollPosition = (el = window) => ({
+  x: el.pageXOffset !== undefined ? el.pageXOffset : el.scrollLeft,
+  y: el.pageYOffset !== undefined ? el.pageYOffset : el.scrollTop
+});
+
+// 平滑滚动到页面顶部
+const scrollToTop = () => {
+  const c = document.documentElement.scrollTop || document.body.scrollTop;
+  if (c > 0) {
+    window.requestAnimationFrame(scrollToTop);
+    window.scrollTo(0, c - c / 8);
+  }
+};
+
+// 金钱格式化，三位加逗号
+const formatMoney = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+const dataType = (target) => {
+  let ret = typeof(target);
+  let template = {
+    '[object Array]': 'array',
+    '[object Object]': 'object',
+    '[object Number]': 'number',
+    '[object Boolean]': 'boolean',
+    '[object String]': 'string',
+  };
+  if (target === null) {
+    return 'null';
+  } else if (ret === 'object'){
+    let str = Object.prototype.toString.call(target);
+    return template[str];
+  }else{
+    return ret;
+  }
+};
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   uniqBy,
-  convert
+  convert,
+  getUrlParams,
+  replaceParamVal,
+  funcUrlDel,
+  getClientHeight,
+  getPageViewWidth,
+  getViewportOffset,
+  getPageScrollTop,
+  getScrollPosition,
+  scrollToTop,
+  formatMoney,
+  dataType,
 });
 
 
@@ -256,11 +396,42 @@ const floatNum = (num, n) => {
   return (Math.round(num * Math.pow(10,n ? n : 1)) / (Math.pow(10,n ? n : 1))).toFixed(n ? n : 1);
 };
 
+// 验证不能包含字母
+const isNoWord = value => /^[^A-Za-z]*$/g.test(value);
+
+// 验证中文和数字
+const isCHNAndEN = value => /^((?:[\u3400-\u4DB5\u4E00-\u9FEA\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD840-\uD868\uD86A-\uD86C\uD86F-\uD872\uD874-\uD879][\uDC00-\uDFFF]|\uD869[\uDC00-\uDED6\uDF00-\uDFFF]|\uD86D[\uDC00-\uDF34\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1D\uDC20-\uDFFF]|\uD873[\uDC00-\uDEA1\uDEB0-\uDFFF]|\uD87A[\uDC00-\uDFE0])|(\d))+$/g.test(value);
+
+// 验证邮政编码(中国)
+const isPostcode = value => /^(0[1-7]|1[0-356]|2[0-7]|3[0-6]|4[0-7]|5[1-7]|6[1-7]|7[0-5]|8[013-6])\d{4}$/g.test(value);
+
+// 验证手机号中国(严谨), 根据工信部2019年最新公布的手机号段
+const isMPStrict = value => /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-7|9])|(?:5[0-3|5-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[1|8|9]))\d{8}$/g.test(value);
+
+// 验证手机号中国(宽松), 只要是13,14,15,16,17,18,19开头即可
+const isMPRelaxed = value => /^(?:(?:\+|00)86)?1[3-9]\d{9}$/g.test(value);
+
+// 验证email(邮箱)
+const isEmail = value => /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/g.test(value);
+
+// 验证座机电话(国内),如: 0341-86091234
+const isLandlineTelephone = value => /\d{3}-\d{8}|\d{4}-\d{7}/g.test(value);
+
+// 验证身份证号, 支持1/2代(15位/18位数字)
+const isIDCard = value => /(^\d{8}(0\d|10|11|12)([0-2]\d|30|31)\d{3}$)|(^\d{6}(18|19|20)\d{2}(0\d|10|11|12)([0-2]\d|30|31)\d{3}(\d|X|x)$)/g.test(value);
+
+// 验证中文/汉字
+const isChineseCharacter = value => /^(?:[\u3400-\u4DB5\u4E00-\u9FEA\uFA0E\uFA0F\uFA11\uFA13\uFA14\uFA1F\uFA21\uFA23\uFA24\uFA27-\uFA29]|[\uD840-\uD868\uD86A-\uD86C\uD86F-\uD872\uD874-\uD879][\uDC00-\uDFFF]|\uD869[\uDC00-\uDED6\uDF00-\uDFFF]|\uD86D[\uDC00-\uDF34\uDF40-\uDFFF]|\uD86E[\uDC00-\uDC1D\uDC20-\uDFFF]|\uD873[\uDC00-\uDEA1\uDEB0-\uDFFF]|\uD87A[\uDC00-\uDFE0])+$/g.test(value);
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   isNull,
   isInteger,
   isUndefined,
   floatNum,
+  isNoWord,
+  isCHNAndEN,
+  isPostcode,
+  isMPStrict,
 });
 
 
