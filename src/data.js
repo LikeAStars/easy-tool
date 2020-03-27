@@ -164,7 +164,7 @@ const dataType = (target) => {
   } else if (ret === 'object'){
     let str = Object.prototype.toString.call(target);
     return template[str];
-  }else{
+  } else {
     return ret;
   }
 };
