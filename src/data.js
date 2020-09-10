@@ -14,8 +14,6 @@ const uniqBy = (arr, comparator) => {
   }, []) : [];
 };
 
-// 数组根据
-
 /*
  * 特殊数组转化为树
  * @params: arr: 传入的数组   key: 数组的唯一标识，如id    parentKey: 父级的唯一标识字段     firstParentKey: 最外层父级的值
@@ -64,9 +62,9 @@ const getUrlParams = (name, origin = null) => {
  * @param { string } paramName
  * @param { string } replaceWith
 */
-const replaceParamVal = (paramName,replaceWith) => {
+const replaceParamVal = (paramName, replaceWith) => {
   let oUrl = location.href.toString();
-  let re = eval('/('+ paramName+'=)([^&]*)/gi');
+  let re = eval('/('+ paramName + '=)([^&]*)/gi');
   location.href = oUrl.replace(re,paramName + '=' + replaceWith);
   return location.href;
 };

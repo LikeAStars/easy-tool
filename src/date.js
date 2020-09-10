@@ -1,6 +1,4 @@
-/**
- * Created by wujiaming on 2020/3/10
- **/
+
 /*
  * 时间格式化
  * @params: date: 传入的时间     fmt: 格式化后的样子

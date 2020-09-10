@@ -1,7 +1,3 @@
-/**
- * Created by wujiaming on 2020/3/10
- **/
-
 // 验证是否为null
 const isNull = (value) => {
   return value === null;
@@ -51,7 +47,7 @@ const isMPRelaxed = value => /^(?:(?:\+|00)86)?1[3-9]\d{9}$/g.test(value);
 const isEmail = value => /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/g.test(value);
 
 // 验证座机电话(国内),如: 0341-86091234
-const isLandlineTelephone = value => /\d{3}-\d{8}|\d{4}-\d{7}/g.test(value);
+const isTelephone = value => /\d{3}-\d{8}|\d{4}-\d{7}/g.test(value);
 
 // 验证身份证号, 支持1/2代(15位/18位数字)
 const isIDCard = value => /(^\d{8}(0\d|10|11|12)([0-2]\d|30|31)\d{3}$)|(^\d{6}(18|19|20)\d{2}(0\d|10|11|12)([0-2]\d|30|31)\d{3}(\d|X|x)$)/g.test(value);
@@ -68,4 +64,9 @@ export default {
   isCHNAndEN,
   isPostcode,
   isMPStrict,
+  isMPRelaxed,
+  isEmail,
+  isTelephone,
+  isIDCard,
+  isChineseCharacter,
 }
